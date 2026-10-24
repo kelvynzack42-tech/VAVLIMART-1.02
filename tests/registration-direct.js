@@ -1,0 +1,15 @@
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const src = fs.readFileSync(path.join(__dirname, '..', 'server', 'server.js'), 'utf8');
+const app = fs.readFileSync(path.join(__dirname, '..', 'assets', 'js', 'app.js'), 'utf8');
+assert(src.includes('p==="/api/auth/register"'), 'Direct registration endpoint is missing.');
+assert(!src.includes('/api/auth/register/verify'), 'Registration verification endpoint still exists.');
+assert(!src.includes('sendTermiiToken'), 'Termii registration sender still exists.');
+assert(!src.includes('verifyTermiiToken'), 'Termii registration verifier still exists.');
+assert(!src.includes('deliverVerification'), 'Registration verification delivery helper still exists.');
+assert(!src.includes('TERMII_'), 'Termii registration configuration remains in server code.');
+assert(app.includes("apiRequest('/api/auth/register'"), 'Client still uses direct registration endpoint.');
+assert(!app.includes('registerVerificationCode'), 'Client registration verification field remains.');
+assert(!app.includes('registerVerificationMethod'), 'Client registration verification selector remains.');
+console.log('VALVIMART direct-registration regression checks passed.');
